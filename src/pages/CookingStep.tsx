@@ -35,13 +35,18 @@ export default function CookingStep() {
   }, [elapsedSeconds, step])
 
   useEffect(() => {
-    let interval: NodeJS.Timer
+    // Use number type for browser setInterval ID
+    let interval: number | undefined
     if (timerRunning) {
-      interval = setInterval(() => {
+      interval = window.setInterval(() => {
         setElapsedSeconds(prev => prev + 1)
       }, 1000)
     }
-    return () => clearInterval(interval)
+    return () => {
+      if (interval) {
+        clearInterval(interval)
+      }
+    }
   }, [timerRunning])
 
   if (!step) {
@@ -61,7 +66,7 @@ export default function CookingStep() {
     const formWindow = window.open(step.formUrl, '_blank', 'width=600,height=600')
 
     if (formWindow) {
-      const checkWindowClosed = setInterval(() => {
+      const checkWindowClosed = window.setInterval(() => {
         if (formWindow.closed) {
           clearInterval(checkWindowClosed)
           if (stepNumber + 1 < steps.length) {
