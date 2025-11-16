@@ -34,23 +34,35 @@ export default function App() {
   }, []);
 
   return (
-    <div style={{ maxWidth: 400, margin: "auto", padding: 20 }}>
-      <h1>HelloFresh Diary Timer</h1>
-      <p style={{ fontSize: 24, fontFamily: "monospace" }}>
-        Timer: {elapsedSeconds} seconds
-      </p>
+  <div className="max-w-md mx-auto p-5 text-center">
+    <h1 className="text-2xl font-bold mb-4">HelloFresh Diary Timer</h1>
+    <p className="text-xl font-mono mb-6">Timer: {elapsedSeconds} seconds</p>
 
+    <div className="space-x-3">
       {!isRunning ? (
-        <button onClick={startTimer} style={{ marginRight: 10 }}>
+        <button
+          onClick={startTimer}
+          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
+        >
           Start Timer
         </button>
       ) : (
-        <button onClick={stopTimer} style={{ marginRight: 10 }}>
+        <button
+          onClick={stopTimer}
+          className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
+        >
           Stop Timer
         </button>
       )}
 
-      <button onClick={resetTimer}>Reset Timer</button>
+      <button
+        onClick={resetTimer}
+        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+      >
+        Reset Timer
+      </button>
     </div>
-  );
+  </div>
+);
+
 }

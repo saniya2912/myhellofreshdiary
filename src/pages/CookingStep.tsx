@@ -18,7 +18,6 @@ export default function CookingStep() {
   const [timerRunning, setTimerRunning] = useState(false)
   const [elapsedSeconds, setElapsedSeconds] = useState(0)
 
-  // Load elapsed time from localStorage when step changes
   useEffect(() => {
     const times = JSON.parse(localStorage.getItem('stepTimes') || '{}')
     if (step && times[step.id]) {
@@ -28,7 +27,6 @@ export default function CookingStep() {
     }
   }, [step])
 
-  // Save elapsed time to localStorage when it changes
   useEffect(() => {
     if (!step) return
     const times = JSON.parse(localStorage.getItem('stepTimes') || '{}')
@@ -36,7 +34,6 @@ export default function CookingStep() {
     localStorage.setItem('stepTimes', JSON.stringify(times))
   }, [elapsedSeconds, step])
 
-  // Timer effect
   useEffect(() => {
     let interval: NodeJS.Timer
     if (timerRunning) {
@@ -48,7 +45,7 @@ export default function CookingStep() {
   }, [timerRunning])
 
   if (!step) {
-    return <div>Step not found</div>
+    return <div className="text-center p-10 text-red-600 font-semibold">Step not found</div>
   }
 
   const handleStartTimer = () => setTimerRunning(true)
@@ -58,9 +55,8 @@ export default function CookingStep() {
     setElapsedSeconds(0)
   }
 
-  // New handleNextStep with popup + close detection
   const handleNextStep = () => {
-    setTimerRunning(false) // pause timer
+    setTimerRunning(false)
 
     const formWindow = window.open(step.formUrl, '_blank', 'width=600,height=600')
 
@@ -76,7 +72,6 @@ export default function CookingStep() {
         }
       }, 500)
     } else {
-      // Popup blocked or failed, navigate immediately
       if (stepNumber + 1 < steps.length) {
         navigate(`/step/${stepNumber + 1}`)
       } else {
@@ -86,27 +81,48 @@ export default function CookingStep() {
   }
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h2>{step.title}</h2>
-      <p>{step.description}</p>
+    <div className="max-w-3xl mx-auto p-8 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+      <h2 className="text-3xl font-semibold mb-4">{step.title}</h2>
+      <p className="mb-6 text-lg text-gray-700 dark:text-gray-300">{step.description}</p>
 
-      <div>
-        <p>Elapsed time: {formatTime(elapsedSeconds)}</p>
+      <div className="mb-6">
+        <p className="text-xl font-mono mb-3">Elapsed time: {formatTime(elapsedSeconds)}</p>
 
-        {!timerRunning ? (
-          <button onClick={handleStartTimer} style={{ marginRight: 10 }}>
-            Start Timer
+        <div className="flex space-x-3 justify-center">
+          {!timerRunning ? (
+            <button
+              onClick={handleStartTimer}
+              className="px-5 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+            >
+              Start Timer
+            </button>
+          ) : (
+            <button
+              onClick={handleStopTimer}
+              className="px-5 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
+            >
+              Pause Timer
+            </button>
+          )}
+
+          <button
+            onClick={handleResetTimer}
+            className="px-5 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+          >
+            Reset Timer
           </button>
-        ) : (
-          <button onClick={handleStopTimer} style={{ marginRight: 10 }}>
-            Pause Timer
-          </button>
-        )}
-
-        <button onClick={handleResetTimer}>Reset Timer</button>
+        </div>
       </div>
 
-      <button onClick={handleNextStep} disabled={timerRunning} style={{ marginTop: 20 }}>
+      <button
+        onClick={handleNextStep}
+        disabled={timerRunning}
+        className={`w-full py-3 rounded text-white transition ${
+          timerRunning
+            ? 'bg-gray-400 cursor-not-allowed'
+            : 'bg-blue-600 hover:bg-blue-700'
+        }`}
+      >
         Next Step & Open Survey
       </button>
     </div>
