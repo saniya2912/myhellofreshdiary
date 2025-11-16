@@ -35,7 +35,6 @@ export default function CookingStep() {
   }, [elapsedSeconds, step])
 
   useEffect(() => {
-    // Use number type for browser setInterval ID
     let interval: number | undefined
     if (timerRunning) {
       interval = window.setInterval(() => {
@@ -43,14 +42,16 @@ export default function CookingStep() {
       }, 1000)
     }
     return () => {
-      if (interval) {
-        clearInterval(interval)
-      }
+      if (interval) clearInterval(interval)
     }
   }, [timerRunning])
 
   if (!step) {
-    return <div className="text-center p-10 text-red-600 font-semibold">Step not found</div>
+    return (
+      <div className="text-center p-10 text-red-600 font-semibold">
+        Step not found
+      </div>
+    )
   }
 
   const handleStartTimer = () => setTimerRunning(true)
@@ -86,50 +87,76 @@ export default function CookingStep() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-8 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-      <h2 className="text-3xl font-semibold mb-4">{step.title}</h2>
-      <p className="mb-6 text-lg text-gray-700 dark:text-gray-300">{step.description}</p>
+    <main className="min-h-screen max-w-4xl mx-auto flex flex-col p-6 sm:p-10 bg-green-50 rounded-lg shadow-lg font-sans">
+      {/* Step Image */}
+      <img
+        src={
+          step.imageUrl ||
+          'https://media.hellofresh.com/c_fit,f_auto,fl_lossy,h_500,q_50,w_1024/hellofresh_s3/image/HF_Y25_R33_W27_UK_L40220-3_Main_high-feafedea.jpg'
+        }
+        alt={step.title}
+        className="w-full h-64 sm:h-96 object-cover rounded-lg mb-8 shadow-md"
+      />
 
-      <div className="mb-6">
-        <p className="text-xl font-mono mb-3">Elapsed time: {formatTime(elapsedSeconds)}</p>
+      {/* Header */}
+      <header className="mb-8 text-center sm:text-left">
+        <h2 className="text-4xl sm:text-5xl font-extrabold text-green-900 mb-4 tracking-tight">
+          {step.title}
+        </h2>
+        <p className="text-lg sm:text-xl text-green-800 leading-relaxed">
+          {step.description}
+        </p>
+      </header>
 
-        <div className="flex space-x-3 justify-center">
+      {/* Timer Section */}
+      <section className="flex flex-col sm:flex-row items-center justify-between bg-green-100 rounded-lg p-6 mb-10 shadow-inner">
+        <div className="mb-4 sm:mb-0 text-center sm:text-left">
+          <p className="text-3xl font-mono font-semibold text-green-900">
+            ⏱ {formatTime(elapsedSeconds)}
+          </p>
+          <p className="text-sm text-green-700 mt-1">Elapsed time</p>
+        </div>
+
+        <div className="flex space-x-4">
           {!timerRunning ? (
             <button
               onClick={handleStartTimer}
-              className="px-5 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+              className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-md shadow focus:outline-none focus:ring-2 focus:ring-green-400 transition"
             >
               Start Timer
             </button>
           ) : (
             <button
               onClick={handleStopTimer}
-              className="px-5 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
+              className="px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-white rounded-md shadow focus:outline-none focus:ring-2 focus:ring-yellow-300 transition"
             >
               Pause Timer
             </button>
           )}
-
           <button
             onClick={handleResetTimer}
-            className="px-5 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+            className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-md shadow focus:outline-none focus:ring-2 focus:ring-red-400 transition"
           >
             Reset Timer
           </button>
         </div>
-      </div>
+      </section>
 
+      {/* Spacer to push button to bottom */}
+      <div className="flex-grow" />
+
+      {/* Next Step Button */}
       <button
         onClick={handleNextStep}
         disabled={timerRunning}
-        className={`w-full py-3 rounded text-white transition ${
+        className={`w-full py-4 rounded-md text-white font-semibold text-lg transition ${
           timerRunning
             ? 'bg-gray-400 cursor-not-allowed'
-            : 'bg-blue-600 hover:bg-blue-700'
+            : 'bg-green-700 hover:bg-green-800'
         }`}
       >
         Next Step & Open Survey
       </button>
-    </div>
+    </main>
   )
 }
