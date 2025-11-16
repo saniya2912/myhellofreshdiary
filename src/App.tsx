@@ -1,35 +1,56 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState, useRef, useEffect } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [isRunning, setIsRunning] = useState(false);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const startTimer = () => {
+    if (isRunning) return;
+    setIsRunning(true);
+    timerRef.current = setInterval(() => {
+      setElapsedSeconds((sec) => sec + 1);
+    }, 1000);
+  };
+
+  const stopTimer = () => {
+    if (!isRunning) return;
+    setIsRunning(false);
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
+  const resetTimer = () => {
+    stopTimer();
+    setElapsedSeconds(0);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
+    <div style={{ maxWidth: 400, margin: "auto", padding: 20 }}>
+      <h1>HelloFresh Diary Timer</h1>
+      <p style={{ fontSize: 24, fontFamily: "monospace" }}>
+        Timer: {elapsedSeconds} seconds
       </p>
-    </>
-  )
-}
 
-export default App
+      {!isRunning ? (
+        <button onClick={startTimer} style={{ marginRight: 10 }}>
+          Start Timer
+        </button>
+      ) : (
+        <button onClick={stopTimer} style={{ marginRight: 10 }}>
+          Stop Timer
+        </button>
+      )}
+
+      <button onClick={resetTimer}>Reset Timer</button>
+    </div>
+  );
+}
