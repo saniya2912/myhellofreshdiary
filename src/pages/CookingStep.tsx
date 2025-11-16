@@ -90,10 +90,7 @@ export default function CookingStep() {
     <main className="min-h-screen max-w-4xl mx-auto flex flex-col p-6 sm:p-10 bg-green-50 rounded-lg shadow-lg font-sans">
       {/* Step Image */}
       <img
-        src={
-          step.imageUrl ||
-          'https://media.hellofresh.com/c_fit,f_auto,fl_lossy,h_500,q_50,w_1024/hellofresh_s3/image/HF_Y25_R33_W27_UK_L40220-3_Main_high-feafedea.jpg'
-        }
+        src="https://media.hellofresh.com/c_fit,f_auto,fl_lossy,h_500,q_50,w_1024/hellofresh_s3/image/HF_Y25_R33_W27_UK_L40220-3_Main_high-feafedea.jpg"
         alt={step.title}
         className="w-full h-64 sm:h-96 object-cover rounded-lg mb-8 shadow-md"
       />
